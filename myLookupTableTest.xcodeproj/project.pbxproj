@@ -15,6 +15,8 @@
 		357B51CB22E5DA240096BCB6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 357B51CA22E5DA240096BCB6 /* main.m */; };
 		357B51D522E5DA240096BCB6 /* myLookupTableTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 357B51D422E5DA240096BCB6 /* myLookupTableTestTests.m */; };
 		357B51E022E5DA240096BCB6 /* myLookupTableTestUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 357B51DF22E5DA240096BCB6 /* myLookupTableTestUITests.m */; };
+		357B51EE22E5DBB90096BCB6 /* 155131625201709141958art38978 in Resources */ = {isa = PBXBuildFile; fileRef = 357B51ED22E5DBB90096BCB6 /* 155131625201709141958art38978 */; };
+		CE587C9FC7DE5E681A9974EE /* libPods-myLookupTableTest.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DB636B2B27454782ED4398D0 /* libPods-myLookupTableTest.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,10 @@
 		357B51DB22E5DA240096BCB6 /* myLookupTableTestUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = myLookupTableTestUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		357B51DF22E5DA240096BCB6 /* myLookupTableTestUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = myLookupTableTestUITests.m; sourceTree = "<group>"; };
 		357B51E122E5DA240096BCB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		357B51ED22E5DBB90096BCB6 /* 155131625201709141958art38978 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = 155131625201709141958art38978; sourceTree = "<group>"; };
+		687C2D6ED7E01FA8F5DF3E20 /* Pods-myLookupTableTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-myLookupTableTest.debug.xcconfig"; path = "Target Support Files/Pods-myLookupTableTest/Pods-myLookupTableTest.debug.xcconfig"; sourceTree = "<group>"; };
+		DB636B2B27454782ED4398D0 /* libPods-myLookupTableTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-myLookupTableTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E1A7F57B6792D0E42AAAD452 /* Pods-myLookupTableTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-myLookupTableTest.release.xcconfig"; path = "Target Support Files/Pods-myLookupTableTest/Pods-myLookupTableTest.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE587C9FC7DE5E681A9974EE /* libPods-myLookupTableTest.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +92,8 @@
 				357B51D322E5DA240096BCB6 /* myLookupTableTestTests */,
 				357B51DE22E5DA240096BCB6 /* myLookupTableTestUITests */,
 				357B51B922E5DA240096BCB6 /* Products */,
+				6F5290C1B462D9109D803813 /* Pods */,
+				F7D03DF9225509C163E534C3 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,6 +110,7 @@
 		357B51BA22E5DA240096BCB6 /* myLookupTableTest */ = {
 			isa = PBXGroup;
 			children = (
+				357B51ED22E5DBB90096BCB6 /* 155131625201709141958art38978 */,
 				357B51BB22E5DA240096BCB6 /* AppDelegate.h */,
 				357B51BC22E5DA240096BCB6 /* AppDelegate.m */,
 				357B51BE22E5DA240096BCB6 /* ViewController.h */,
@@ -132,6 +142,23 @@
 			path = myLookupTableTestUITests;
 			sourceTree = "<group>";
 		};
+		6F5290C1B462D9109D803813 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				687C2D6ED7E01FA8F5DF3E20 /* Pods-myLookupTableTest.debug.xcconfig */,
+				E1A7F57B6792D0E42AAAD452 /* Pods-myLookupTableTest.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		F7D03DF9225509C163E534C3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DB636B2B27454782ED4398D0 /* libPods-myLookupTableTest.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -139,9 +166,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 357B51E422E5DA240096BCB6 /* Build configuration list for PBXNativeTarget "myLookupTableTest" */;
 			buildPhases = (
+				8F7C1F2740C27C7ED867774C /* [CP] Check Pods Manifest.lock */,
 				357B51B422E5DA240096BCB6 /* Sources */,
 				357B51B522E5DA240096BCB6 /* Frameworks */,
 				357B51B622E5DA240096BCB6 /* Resources */,
+				B08C2E811147F18217812BB0 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -238,6 +267,7 @@
 				357B51C822E5DA240096BCB6 /* LaunchScreen.storyboard in Resources */,
 				357B51C522E5DA240096BCB6 /* Assets.xcassets in Resources */,
 				357B51C322E5DA240096BCB6 /* Main.storyboard in Resources */,
+				357B51EE22E5DBB90096BCB6 /* 155131625201709141958art38978 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,6 +286,61 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		8F7C1F2740C27C7ED867774C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-myLookupTableTest-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B08C2E811147F18217812BB0 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-myLookupTableTest/Pods-myLookupTableTest-resources.sh",
+				"${PODS_ROOT}/GPUImage/framework/Resources/lookup.png",
+				"${PODS_ROOT}/GPUImage/framework/Resources/lookup_amatorka.png",
+				"${PODS_ROOT}/GPUImage/framework/Resources/lookup_miss_etikate.png",
+				"${PODS_ROOT}/GPUImage/framework/Resources/lookup_soft_elegance_1.png",
+				"${PODS_ROOT}/GPUImage/framework/Resources/lookup_soft_elegance_2.png",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/lookup.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/lookup_amatorka.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/lookup_miss_etikate.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/lookup_soft_elegance_1.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/lookup_soft_elegance_2.png",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-myLookupTableTest/Pods-myLookupTableTest-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		357B51B422E5DA240096BCB6 /* Sources */ = {
@@ -433,6 +518,7 @@
 		};
 		357B51E522E5DA240096BCB6 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 687C2D6ED7E01FA8F5DF3E20 /* Pods-myLookupTableTest.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -449,6 +535,7 @@
 		};
 		357B51E622E5DA240096BCB6 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E1A7F57B6792D0E42AAAD452 /* Pods-myLookupTableTest.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
