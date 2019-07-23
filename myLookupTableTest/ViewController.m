@@ -36,17 +36,20 @@
 - (UIImage *)applyFIlter:(UIImage *)originalImg {
     UIImage *inputImage = originalImg;
     UIImage *outputImage = nil;
-    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
-    //添加滤镜
-    GPUImageLookupFilter *lookUpFilter = [[GPUImageLookupFilter alloc] init];
-    //导入之前保存的NewLookupTable.png文件
     
     NSString *path = [[NSBundle mainBundle] pathForResource:@"155131625201709141958art38978/892801501567939852359ba6ee4d4ad8" ofType:@"png"];
     UIImage *image = [UIImage imageWithContentsOfFile:path];
     GPUImagePicture *lookupImg = [[GPUImagePicture alloc] initWithImage:image];
+    
+    GPUImagePicture *stillImageSource = [[GPUImagePicture alloc] initWithImage:inputImage];
+    
+    GPUImageLookupFilter *lookUpFilter = [[GPUImageLookupFilter alloc] init];
+    lookUpFilter.intensity = 1.0;
+    
     [lookupImg addTarget:lookUpFilter atTextureLocation:1];
     [stillImageSource addTarget:lookUpFilter atTextureLocation:0];
     [lookUpFilter useNextFrameForImageCapture];
+    
     if([lookupImg processImageWithCompletionHandler:nil] && [stillImageSource processImageWithCompletionHandler:nil]) {
         outputImage = [lookUpFilter imageFromCurrentFramebuffer];
     }
