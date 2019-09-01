@@ -41,7 +41,6 @@
 		3512EB77230EC1D000FC9C94 /* DYSwitchFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DYSwitchFilter.h; sourceTree = "<group>"; };
 		3512EB78230EC1D100FC9C94 /* DYSwitchFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DYSwitchFilter.m; sourceTree = "<group>"; };
 		357B51B822E5DA240096BCB6 /* myLookupTableTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = myLookupTableTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		357B51BB22E5DA240096BCB6 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		357B51BC22E5DA240096BCB6 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		357B51BE22E5DA240096BCB6 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		357B51BF22E5DA240096BCB6 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
@@ -57,6 +56,7 @@
 		357B51DF22E5DA240096BCB6 /* myLookupTableTestUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = myLookupTableTestUITests.m; sourceTree = "<group>"; };
 		357B51E122E5DA240096BCB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		357B51ED22E5DBB90096BCB6 /* 155131625201709141958art38978 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = 155131625201709141958art38978; sourceTree = "<group>"; };
+		5FDEDC54231ACBCB00CAFE84 /* 2333.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = 2333.md; sourceTree = "<group>"; };
 		687C2D6ED7E01FA8F5DF3E20 /* Pods-myLookupTableTest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-myLookupTableTest.debug.xcconfig"; path = "Target Support Files/Pods-myLookupTableTest/Pods-myLookupTableTest.debug.xcconfig"; sourceTree = "<group>"; };
 		DB636B2B27454782ED4398D0 /* libPods-myLookupTableTest.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-myLookupTableTest.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E1A7F57B6792D0E42AAAD452 /* Pods-myLookupTableTest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-myLookupTableTest.release.xcconfig"; path = "Target Support Files/Pods-myLookupTableTest/Pods-myLookupTableTest.release.xcconfig"; sourceTree = "<group>"; };
@@ -114,7 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				357B51ED22E5DBB90096BCB6 /* 155131625201709141958art38978 */,
-				357B51BB22E5DA240096BCB6 /* AppDelegate.h */,
+				5FDEDC54231ACBCB00CAFE84 /* 2333.md */,
 				357B51BC22E5DA240096BCB6 /* AppDelegate.m */,
 				357B51BE22E5DA240096BCB6 /* ViewController.h */,
 				357B51BF22E5DA240096BCB6 /* ViewController.m */,
