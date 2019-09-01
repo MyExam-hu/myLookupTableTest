@@ -6,6 +6,6 @@ target 'myLookupTableTest' do
     
 # 第三方框架
   pod 'GPUImage'
-  
+  pod 'HWDWeakTimer'
   
 end
