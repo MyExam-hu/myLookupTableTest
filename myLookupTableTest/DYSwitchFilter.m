@@ -96,11 +96,12 @@ NSString *const cameraSwitchFragmentShader = SHADER_STRING
         return nil;
     }
     
-    percentUniform = [filterProgram uniformIndex:@"radius"];
+    percentUniform = [filterProgram uniformIndex:@"percent"];
     directionUniform = [filterProgram uniformIndex:@"direction"];
     [filterProgram use];
-    [filterProgram addAttribute:@"sourceImage"];
-    [filterProgram addAttribute:@"secondSourceImage"];
+    
+    filterInputTextureUniform = [filterProgram uniformIndex:@"sourceImage"];
+    filterInputTextureUniform2 = [filterProgram uniformIndex:@"secondSourceImage"];
     
     self.percent = 1.0;
     self.direction = OISwitchFilterDirectionFromLeftToRight;

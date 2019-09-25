@@ -10,10 +10,11 @@
 #import <GPUImage.h>
 #import "DYSwitchFilter.h"
 
-@interface ViewController ()
+@interface ViewController ()<UITableViewDataSource>
 
 @property (nonatomic, strong) GPUImageVideoCamera *camera;
 
+//@property (nonatomic, strong) DYSwitchFilter *switchFilter;
 @property (nonatomic, strong) DYSwitchFilter *switchFilter;
 @property (nonatomic, strong) GPUImageRGBFilter *redFilter;
 @property (nonatomic, strong) GPUImageRGBFilter *blueFilter;
@@ -56,9 +57,15 @@
     self.blueFilter.blue = 1.0;
     
     self.switchFilter = [[DYSwitchFilter alloc] init];
+    self.switchFilter.percent = 0.5;
     
     [_camera addTarget:self.redFilter];
-    [self.redFilter addTarget:imageView];
+    [_camera addTarget:self.blueFilter];
+    
+    [self.redFilter addTarget:self.switchFilter];
+    [self.blueFilter addTarget:self.switchFilter];
+    
+    [self.switchFilter addTarget:imageView];
     
     [_camera startCameraCapture];
 }
