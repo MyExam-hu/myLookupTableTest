@@ -10,7 +10,10 @@
 #import <GPUImage.h>
 #import "DYSwitchFilter.h"
 
-@interface ViewController ()<UITableViewDataSource>
+@interface ViewController ()<UIGestureRecognizerDelegate>{
+    CGPoint startPoint_;
+    float switchFilterPercent_;
+}
 
 @property (nonatomic, strong) GPUImageVideoCamera *camera;
 
@@ -18,6 +21,9 @@
 @property (nonatomic, strong) DYSwitchFilter *switchFilter;
 @property (nonatomic, strong) GPUImageRGBFilter *redFilter;
 @property (nonatomic, strong) GPUImageRGBFilter *blueFilter;
+
+@property (nonatomic, strong) UIPanGestureRecognizer *camPanGesture;
+@property (nonatomic, strong) UISlider *progressSlider;
 
 @end
 
@@ -68,6 +74,17 @@
     [self.switchFilter addTarget:imageView];
     
     [_camera startCameraCapture];
+    
+    self.camPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(camPanGestureRecognizer:)];
+    self.camPanGesture.delegate = self;
+    [self.view addGestureRecognizer:self.camPanGesture];
+    
+    self.progressSlider = [[UISlider alloc] initWithFrame:CGRectMake((screen.size.width - 247) * .5f, screen.size.height*.5f- 50*.5f, 247, 50)];
+    self.progressSlider.maximumValue = 1.0;
+    self.progressSlider.minimumValue = 0.0;
+    self.progressSlider.value = 0.5;
+    [self.progressSlider addTarget:self action:@selector(sliderProgressChange:) forControlEvents:UIControlEventValueChanged];
+    [self.view addSubview:self.progressSlider];
 }
 
 - (UIImage *)applyFIlter:(UIImage *)originalImg {
@@ -92,6 +109,14 @@
     }
     
     return outputImage;
+}
+
+- (void)camPanGestureRecognizer:(UIPanGestureRecognizer *)panGesture {
+    
+}
+
+- (void)sliderProgressChange:(UISlider *)slider {
+    self.switchFilter.percent = 1.0 - slider.value;
 }
 
 @end
