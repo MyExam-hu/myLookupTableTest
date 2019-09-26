@@ -11,16 +11,18 @@
 NSString *const cameraSwitchVertextShader = SHADER_STRING
 (
  attribute vec4 position;
- attribute vec2 textureCoordinate;
- attribute vec2 secondTextureCoordinate;
+// attribute vec2 textureCoordinate;
+// attribute vec2 secondTextureCoordinate;
+ attribute vec4 inputTextureCoordinate;
+ attribute vec4 inputTextureCoordinate2;
  
  varying vec2 textureCoordinatePort;
  varying vec2 secondTextureCoordinatePort;
  
  void main()
 {
-    textureCoordinatePort = textureCoordinate;
-    secondTextureCoordinatePort = secondTextureCoordinate;
+    textureCoordinatePort = inputTextureCoordinate.xy;
+    secondTextureCoordinatePort = inputTextureCoordinate2.xy;
     
     gl_Position = position;
 }
