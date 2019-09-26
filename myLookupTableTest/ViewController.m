@@ -13,6 +13,7 @@
 @interface ViewController ()<UIGestureRecognizerDelegate>{
     CGPoint startPoint_;
     float switchFilterPercent_;
+    CADisplayLink *displayLink_;
 }
 
 @property (nonatomic, strong) GPUImageVideoCamera *camera;
@@ -84,6 +85,9 @@
     self.progressSlider.minimumValue = 0.0;
     self.progressSlider.value = 0.5;
     [self.progressSlider addTarget:self action:@selector(sliderProgressChange:) forControlEvents:UIControlEventValueChanged];
+    [self.progressSlider addTarget:self
+                            action:@selector(sliderProgressEnd:)
+                  forControlEvents:UIControlEventTouchUpInside | UIControlEventTouchCancel | UIControlEventTouchDragExit];
     [self.view addSubview:self.progressSlider];
 }
 
@@ -112,11 +116,72 @@
 }
 
 - (void)camPanGestureRecognizer:(UIPanGestureRecognizer *)panGesture {
-    
+    if (panGesture.state == UIGestureRecognizerStateBegan) {
+        startPoint_ = [panGesture locationInView:panGesture.view];
+    }else if(panGesture.state == UIGestureRecognizerStateChanged) {
+        CGPoint currentPoint = [panGesture locationInView:panGesture.view];
+        CGFloat x = currentPoint.x - startPoint_.x;
+        CGFloat y = currentPoint.y - startPoint_.y;
+        NSLog(@"x = %lf,y = %lf", x, y);
+        
+        CGRect rect = [UIScreen mainScreen].bounds;
+        CGFloat markWidth = rect.size.width/2.0;
+        if (x > 0.0) {
+            //右边
+//            switchFilterPercent_ = x/markWidth;
+        }else {
+            //左边
+        }
+        
+    }else if(panGesture.state == UIGestureRecognizerStateEnded || panGesture.state == UIGestureRecognizerStateCancelled) {
+        
+    }
 }
 
 - (void)sliderProgressChange:(UISlider *)slider {
     self.switchFilter.percent = 1.0 - slider.value;
+    switchFilterPercent_ = self.switchFilter.percent;
+}
+
+- (void)sliderProgressEnd:(UISlider *)slider {
+    [self stopDisplayLinkAnimation];
+    [self startDisplayLinkAnimation];
+    NSLog(@"sliderProgressEnd");
+}
+
+- (void)startSwitchFilterAnimation
+{
+    if (switchFilterPercent_ > 0.5) {
+        switchFilterPercent_ += 0.1;
+        if (switchFilterPercent_ >= 1.0) {
+            switchFilterPercent_ = 1.0;
+            [self stopDisplayLinkAnimation];
+        }
+    }else {
+        switchFilterPercent_ -= 0.1;
+        if (switchFilterPercent_ <= 0.0) {
+            switchFilterPercent_ = 0.0;
+            [self stopDisplayLinkAnimation];
+        }
+    }
+    self.switchFilter.percent = switchFilterPercent_;
+    
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        weakSelf.progressSlider.value = 1.0 - self->switchFilterPercent_;
+    });
+}
+
+- (void)startDisplayLinkAnimation {
+    displayLink_ = [CADisplayLink displayLinkWithTarget:self selector:@selector(startSwitchFilterAnimation)];
+    displayLink_.frameInterval = 2;
+    [displayLink_ addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+}
+
+- (void)stopDisplayLinkAnimation {
+    if (displayLink_) {
+        [displayLink_ invalidate];
+    }
 }
 
 @end
