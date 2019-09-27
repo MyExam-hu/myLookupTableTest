@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(int, OISwitchFilterDirection) {
+    OISwitchFilterDirectionFromUnknown     = -1,// 未知
     OISwitchFilterDirectionFromLeftToRight = 0, // 从左到右
     OISwitchFilterDirectionFromRightToLeft,     // 从右到左
     OISwitchFilterDirectionFromDownToUp,        // 从下到上

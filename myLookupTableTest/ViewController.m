@@ -13,7 +13,7 @@
 
 @interface ViewController ()<UIGestureRecognizerDelegate,UICollectionViewDelegate,UICollectionViewDataSource>{
     CGPoint startPoint_;
-    float switchFilterPercent_;
+    float switchFilterPercent;
     CADisplayLink *displayLink_;
 }
 //相机
@@ -36,6 +36,8 @@
 @property (nonatomic, strong) GPUImageSaturationFilter *saturationFilter;
 //旋转
 @property (nonatomic, strong) GPUImageSwirlFilter *swirlFilter;
+//空滤镜
+@property (nonatomic, strong) GPUImageFilter *emptyFilter;
 
 @property (nonatomic, strong) UIPanGestureRecognizer *camPanGesture;
 @property (nonatomic, strong) UISlider *progressSlider;
@@ -44,11 +46,11 @@
 @property (nonatomic, strong) NSArray *dataSourceList;
 @property (nonatomic, strong) NSArray<GPUImageOutput<GPUImageInput> *> *filterList;
 
-@property (nonatomic, strong) GPUImageOutput<GPUImageInput> *currentFilter;
 @property (nonatomic, strong) GPUImageOutput<GPUImageInput> *leftFilter;
 @property (nonatomic, strong) GPUImageOutput<GPUImageInput> *rightFilter;
 
-@property (nonatomic, assign) NSInteger *selectIndex;
+@property (nonatomic, assign) NSInteger selectIndex;
+@property (nonatomic, assign) OISwitchFilterDirection switchDirection;
 
 @end
 
@@ -64,15 +66,8 @@
     [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionTop];
     self.selectIndex = 0;
     
-//    [self.camera addTarget:self.redFilter];
-//    [self.camera addTarget:self.blueFilter];
-//
-//    [self.redFilter addTarget:self.switchFilter];
-//    [self.blueFilter addTarget:self.switchFilter];
-//
-//    [self.switchFilter addTarget:self.showCameraView];
-    
-    [self.camera addTarget:self.showCameraView];
+    [self.camera addTarget:self.emptyFilter];
+    [self.emptyFilter addTarget:self.showCameraView];
     
     self.camPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(camPanGestureRecognizer:)];
     self.camPanGesture.delegate = self;
@@ -82,25 +77,22 @@
 }
 
 - (void)startSwitchFilterAnimation {
-    if (switchFilterPercent_ > 0.5) {
-        switchFilterPercent_ += 0.1;
-        if (switchFilterPercent_ >= 1.0) {
-            switchFilterPercent_ = 1.0;
+    if (switchFilterPercent > 0.5) {
+        switchFilterPercent += 0.1;
+        if (switchFilterPercent >= 1.0) {
+            switchFilterPercent = 1.0;
             [self stopDisplayLinkAnimation];
+            [self recoverFilter];
         }
     }else {
-        switchFilterPercent_ -= 0.1;
-        if (switchFilterPercent_ <= 0.0) {
-            switchFilterPercent_ = 0.0;
+        switchFilterPercent -= 0.1;
+        if (switchFilterPercent <= 0.0) {
+            switchFilterPercent = 0.0;
             [self stopDisplayLinkAnimation];
+            [self recoverFilter];
         }
     }
-    self.switchFilter.percent = switchFilterPercent_;
-    
-    __weak typeof(self) weakSelf = self;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        weakSelf.progressSlider.value = 1.0 - self->switchFilterPercent_;
-    });
+    self.switchFilter.percent = switchFilterPercent;
 }
 
 - (void)startDisplayLinkAnimation {
@@ -126,8 +118,60 @@
 }
 
 - (void)changeSwitchTargets {
-    [self removeAllFilterTargets];
+    if ((self.switchDirection == OISwitchFilterDirectionFromRightToLeft && self.selectIndex >= self.filterList.count - 1)
+        ||(self.switchDirection == OISwitchFilterDirectionFromLeftToRight && self.selectIndex <= 0)) {
+        //边界判断
+        return;
+    }
     
+    if (self.switchDirection != self.switchFilter.direction) {
+        [self removeAllFilterTargets];
+        self.switchFilter.direction = self.switchDirection;
+        
+        if (self.switchDirection == OISwitchFilterDirectionFromRightToLeft) {
+            //左边
+            self.leftFilter = self.filterList[self.selectIndex];
+            self.rightFilter = self.filterList[self.selectIndex + 1];
+        }else if (self.switchDirection == OISwitchFilterDirectionFromLeftToRight) {
+            self.leftFilter = self.filterList[self.selectIndex - 1];
+            self.rightFilter = self.filterList[self.selectIndex];
+        }
+        
+        if ([self.rightFilter isKindOfClass:[GPUImageLookupFilter class]]) {
+            //自定义特效滤镜需要特殊处理
+            [self.lookupImg addTarget:self.rightFilter atTextureLocation:1];
+            [self.lookupImg processImageWithCompletionHandler:nil];
+        }
+        
+        if ([self.leftFilter isKindOfClass:[GPUImageLookupFilter class]]) {
+            //自定义特效滤镜需要特殊处理
+            [self.lookupImg addTarget:self.leftFilter atTextureLocation:1];
+            [self.lookupImg processImageWithCompletionHandler:nil];
+        }
+        
+        [self.camera addTarget:self.leftFilter];
+        [self.camera addTarget:self.rightFilter];
+        
+        [self.leftFilter addTarget:self.switchFilter];
+        [self.rightFilter addTarget:self.switchFilter];
+        
+        [self.switchFilter addTarget:self.showCameraView];
+    }
+    
+    self.switchFilter.percent = switchFilterPercent;
+}
+
+- (void)recoverFilter {
+    [self removeAllFilterTargets];
+    GPUImageOutput<GPUImageInput> * currentFilter = self.filterList[self.selectIndex];
+    if (self.selectIndex == 1) {
+        //自定义特效滤镜需要特殊处理
+        [self.lookupImg addTarget:self.lookUpFilter atTextureLocation:1];
+        [self.lookupImg processImageWithCompletionHandler:nil];
+    }
+    
+    [self.camera addTarget:currentFilter];
+    [currentFilter addTarget:self.showCameraView];
 }
 
 
@@ -148,20 +192,16 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [self removeAllFilterTargets];
-    self.currentFilter = self.filterList[indexPath.row];
-    if (indexPath.row == 0) {
-        self.currentFilter = nil;
-    }else if (indexPath.row == 1) {
+    GPUImageOutput<GPUImageInput> * currentFilter = self.filterList[indexPath.row];
+    if (indexPath.row == 1) {
+        //自定义特效滤镜需要特殊处理
         [self.lookupImg addTarget:self.lookUpFilter atTextureLocation:1];
         [self.lookupImg processImageWithCompletionHandler:nil];
     }
     
-    if (self.currentFilter) {
-        [self.camera addTarget:self.currentFilter];
-        [self.currentFilter addTarget:self.showCameraView];
-    }else {
-        [self.camera addTarget:self.showCameraView];
-    }
+    [self.camera addTarget:currentFilter];
+    [currentFilter addTarget:self.showCameraView];
+
     self.selectIndex = indexPath.row;
 }
 
@@ -172,34 +212,78 @@
     if (panGesture.state == UIGestureRecognizerStateBegan) {
         startPoint_ = [panGesture locationInView:panGesture.view];
     }else if(panGesture.state == UIGestureRecognizerStateChanged) {
+        CGRect rect = [UIScreen mainScreen].bounds;
         CGPoint currentPoint = [panGesture locationInView:panGesture.view];
         CGFloat x = currentPoint.x - startPoint_.x;
-        CGFloat y = currentPoint.y - startPoint_.y;
-        NSLog(@"x = %lf,y = %lf", x, y);
+//        CGFloat y = currentPoint.y - startPoint_.y;
+        float standardX = x/(rect.size.width * 2/3);
         
-        CGRect rect = [UIScreen mainScreen].bounds;
-        CGFloat markWidth = rect.size.width/2.0;
-        if (x > 0.0) {
-            //右边
-//            switchFilterPercent_ = x/markWidth;
-        }else {
+        if (standardX < 0) {
             //左边
+            self.switchDirection = OISwitchFilterDirectionFromRightToLeft;
+            switchFilterPercent = fabsf(standardX);
+        } else {
+            //右边
+            self.switchDirection = OISwitchFilterDirectionFromLeftToRight;
+            switchFilterPercent = 1.0 - fabsf(standardX);
+        }
+        NSLog(@"switchDirection = %d, standardX = %lf", self.switchDirection, standardX);
+
+        [self changeSwitchTargets];
+    }else if(panGesture.state == UIGestureRecognizerStateEnded || panGesture.state == UIGestureRecognizerStateCancelled) {
+        [self stopDisplayLinkAnimation];
+        [self startDisplayLinkAnimation];
+        
+        if ((switchFilterPercent > 0.5 && self.switchDirection == OISwitchFilterDirectionFromRightToLeft)
+            || (switchFilterPercent < 0.5 && self.switchDirection == OISwitchFilterDirectionFromLeftToRight)) {
+            if (self.switchDirection == OISwitchFilterDirectionFromRightToLeft) {
+                self.selectIndex++;
+            }else if (self.switchDirection == OISwitchFilterDirectionFromLeftToRight) {
+                self.selectIndex--;
+            }
+            
+            if (self.selectIndex < 0) {
+                self.selectIndex = 0;
+            }else if (self.selectIndex > self.filterList.count - 1) {
+                self.selectIndex = self.filterList.count - 1;
+            }
+            
+            [self.collectionView selectItemAtIndexPath:[NSIndexPath indexPathForRow:self.selectIndex inSection:0] animated:YES scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
         }
         
-    }else if(panGesture.state == UIGestureRecognizerStateEnded || panGesture.state == UIGestureRecognizerStateCancelled) {
-        
+        self.switchDirection = OISwitchFilterDirectionFromUnknown;
+        self.switchFilter.direction = OISwitchFilterDirectionFromUnknown;
     }
 }
 
 - (void)sliderProgressChange:(UISlider *)slider {
-    self.switchFilter.percent = 1.0 - slider.value;
-    switchFilterPercent_ = self.switchFilter.percent;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        GPUImageOutput<GPUImageInput> * currentFilter = self.filterList[self.selectIndex];
+        if ([currentFilter isKindOfClass:[GPUImageLookupFilter class]]) {
+            GPUImageLookupFilter *filter = (GPUImageLookupFilter *)currentFilter;
+            filter.intensity = slider.value * 1.0;
+        }else if ([currentFilter isKindOfClass:[GPUImageGaussianBlurFilter class]]) {
+            GPUImageGaussianBlurFilter *filter = (GPUImageGaussianBlurFilter *)currentFilter;
+            filter.blurRadiusInPixels = slider.value * 80.0;
+        }else if ([currentFilter isKindOfClass:[GPUImageiOSBlurFilter class]]) {
+            GPUImageiOSBlurFilter *filter = (GPUImageiOSBlurFilter *)currentFilter;
+            filter.blurRadiusInPixels = slider.value * 80.0;
+            filter.rangeReductionFactor = slider.value;
+        }else if ([currentFilter isKindOfClass:[GPUImageBrightnessFilter class]]) {
+            GPUImageBrightnessFilter *filter = (GPUImageBrightnessFilter *)currentFilter;
+            filter.brightness = (slider.value - 0.5) * 2.0;
+        }else if ([currentFilter isKindOfClass:[GPUImageSaturationFilter class]]) {
+            GPUImageSaturationFilter *filter = (GPUImageSaturationFilter *)currentFilter;
+            filter.saturation = slider.value * 2.0;
+        }else if ([currentFilter isKindOfClass:[GPUImageSwirlFilter class]]) {
+            GPUImageSwirlFilter *filter = (GPUImageSwirlFilter *)currentFilter;
+            filter.center = CGPointMake(slider.value, slider.value);
+        }
+    });
 }
 
 - (void)sliderProgressEnd:(UISlider *)slider {
-    [self stopDisplayLinkAnimation];
-    [self startDisplayLinkAnimation];
-    NSLog(@"sliderProgressEnd");
+    
 }
 
 
@@ -234,7 +318,7 @@
 
 -(NSArray<GPUImageOutput<GPUImageInput> *> *)filterList {
     if (!_filterList) {
-        _filterList = @[[GPUImageFilter new],
+        _filterList = @[self.emptyFilter,
                         self.lookUpFilter,
                         self.gaussianBlurFilter,
                         self.iOSBlurFilter,
@@ -306,6 +390,7 @@
     if (!_switchFilter) {
         _switchFilter = [[DYSwitchFilter alloc] init];
         _switchFilter.percent = 0.5;
+        _switchFilter.direction = OISwitchFilterDirectionFromUnknown;
     }
     return _switchFilter;
 }
@@ -341,6 +426,13 @@
         _swirlFilter.center = CGPointMake(0.5, 0.5);
     }
     return _swirlFilter;
+}
+
+- (GPUImageFilter *)emptyFilter {
+    if (!_emptyFilter) {
+        _emptyFilter = [[GPUImageFilter alloc] init];
+    }
+    return _emptyFilter;
 }
 
 @end
